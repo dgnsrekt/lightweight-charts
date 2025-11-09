@@ -1,0 +1,17 @@
+{
+    "mcpServers": {
+        "codex": {
+            "command": "codex",
+            "args": [
+                "mcp",
+                "serve"
+            ]
+        },
+        "playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        }
+    }
+}
