@@ -47,9 +47,9 @@ This ensures phase-specific plans are easily identifiable and searchable.
 
 ## Existing Documents
 
-1. **document-name** - **subject**
+1. **PLAN_0001_09-11-2025_sun_discord-message-plugin.md** - Discord Message Plugin for lightweight-charts with dual positioning modes (fixed/draggable)
 
-Next document number: **0001**
+Next document number: **0002**
 
 ## Plan Type Guidelines
 
