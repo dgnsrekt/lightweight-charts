@@ -2,7 +2,7 @@ import { CanvasRenderingTarget2D } from 'fancy-canvas';
 import { IPrimitivePaneRenderer } from 'lightweight-charts';
 import { RendererData } from './irenderer-data';
 import { discordIcon, iconDimensions } from './icons';
-import { positionsLine } from '../../helpers/dimensions/positions';
+import { positionsLine } from '../../../helpers/dimensions/positions';
 
 /**
  * Discord message card renderer
