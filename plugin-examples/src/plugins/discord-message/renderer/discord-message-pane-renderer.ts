@@ -2,6 +2,7 @@ import { CanvasRenderingTarget2D } from 'fancy-canvas';
 import { IPrimitivePaneRenderer } from 'lightweight-charts';
 import { RendererData } from './irenderer-data';
 import { discordIcon, iconDimensions } from './icons';
+import { positionsLine } from '../../helpers/dimensions/positions';
 
 /**
  * Discord message card renderer
@@ -10,6 +11,30 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 	private _data: RendererData[] = [];
 
 	draw(target: CanvasRenderingTarget2D): void {
+		// First pass: Draw subtle connecting lines in bitmap space
+		target.useBitmapCoordinateSpace(scope => {
+			const ctx = scope.context;
+
+			this._data.forEach(data => {
+				const { x, y, options } = data;
+				const cardHeight = this._calculateCardHeight(options);
+
+				// Draw subtle vertical line from card bottom to pane bottom
+				const linePos = positionsLine(x, scope.horizontalPixelRatio, 1);
+				const lineStartY = (y + cardHeight) * scope.verticalPixelRatio;
+				const lineEndY = scope.bitmapSize.height;
+
+				ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Very subtle shadow
+				ctx.fillRect(
+					linePos.position,
+					lineStartY,
+					linePos.length,
+					lineEndY - lineStartY
+				);
+			});
+		});
+
+		// Second pass: Draw message cards in media space
 		target.useMediaCoordinateSpace(scope => {
 			const ctx = scope.context;
 
