@@ -11,41 +11,39 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 	private _data: RendererData[] = [];
 
 	draw(target: CanvasRenderingTarget2D): void {
-		// First pass: Draw crosshair reference lines in bitmap space
+		// First pass: Draw crosshair reference lines FROM anchor point in bitmap space
 		target.useBitmapCoordinateSpace(scope => {
 			const ctx = scope.context;
 
 			this._data.forEach(data => {
-				const { x, y, options } = data;
-				const cardHeight = this._calculateCardHeight(options);
+				const { x, y } = data;
+
+				// x, y represent the anchor point (time/price location on chart)
+				const anchorX = x;
+				const anchorY = y;
 
 				// More visible color for better clarity
 				ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
 
-				// VERTICAL LINE - from card bottom to time axis (pane bottom)
-				const verticalLinePos = positionsLine(x, scope.horizontalPixelRatio, 1);
-				const lineStartY = (y + cardHeight) * scope.verticalPixelRatio;
-				const lineEndY = scope.bitmapSize.height;
+				// VERTICAL LINE - from anchor point down to time axis (bottom)
+				const verticalLinePos = positionsLine(anchorX, scope.horizontalPixelRatio, 1);
+				const anchorYBitmap = anchorY * scope.verticalPixelRatio;
 
 				ctx.fillRect(
 					verticalLinePos.position,
-					lineStartY,
+					anchorYBitmap,  // Start FROM anchor point
 					verticalLinePos.length,
-					lineEndY - lineStartY
+					scope.bitmapSize.height - anchorYBitmap  // Down to bottom
 				);
 
-				// HORIZONTAL LINE - from left to right at card's vertical center
-				const cardCenterY = y + (cardHeight / 2);
-				const horizontalLinePos = positionsLine(
-					cardCenterY,
-					scope.verticalPixelRatio,
-					1
-				);
+				// HORIZONTAL LINE - from anchor point left to price axis
+				const horizontalLinePos = positionsLine(anchorY, scope.verticalPixelRatio, 1);
+				const anchorXBitmap = anchorX * scope.horizontalPixelRatio;
 
 				ctx.fillRect(
-					0, // Start from left edge
+					0,  // Start from left edge (price axis)
 					horizontalLinePos.position,
-					scope.bitmapSize.width, // Extend to right edge
+					anchorXBitmap,  // Extend to anchor point
 					horizontalLinePos.length
 				);
 			});
