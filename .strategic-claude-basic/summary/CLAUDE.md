@@ -58,9 +58,9 @@ Where:
 
 ## Existing Documents
 
-1. **document-name** - **subject**
+1. **SUMMARY_PLAN_0001_09-11-2025_sun_discord-message-plugin.md** - Discord Message Plugin implementation with incomplete hover state and untested manual verification
 
-Next document number: **0001** (or match existing plan number)
+Next document number: **0002** (or match existing plan number)
 
 ## Instructions for Claude Code
 

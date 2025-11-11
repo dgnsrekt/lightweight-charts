@@ -376,16 +376,16 @@ export class DiscordMessagePlugin {
 
 #### Automated Verification:
 
-- [ ] TypeScript compilation succeeds: `npm run build`
-- [ ] No linting errors: `npm run lint` (if configured)
-- [ ] Module exports correctly: can import DiscordMessagePlugin
+- [x] TypeScript compilation succeeds: `npm run build`
+- [x] No linting errors: `npm run lint` (if configured)
+- [x] Module exports correctly: can import DiscordMessagePlugin
 
 #### Manual Verification:
 
-- [ ] Directory structure follows lightweight-charts plugin conventions
-- [ ] Interfaces are well-documented with JSDoc comments
-- [ ] Type definitions are complete with no `any` types
-- [ ] Default options provide sensible Discord theme defaults
+- [x] Directory structure follows lightweight-charts plugin conventions
+- [x] Interfaces are well-documented with JSDoc comments
+- [x] Type definitions are complete with no `any` types
+- [x] Default options provide sensible Discord theme defaults
 
 ---
 
@@ -436,15 +436,15 @@ export class FixedPositioningStrategy implements IPositioningStrategy {
 
 #### Automated Verification:
 
-- [ ] TypeScript compilation succeeds: `npm run build`
-- [ ] Strategy implements IPositioningStrategy interface
-- [ ] No runtime errors when calling resolveAnchor()
+- [x] TypeScript compilation succeeds: `npm run build`
+- [x] Strategy implements IPositioningStrategy interface
+- [x] No runtime errors when calling resolveAnchor()
 
 #### Manual Verification:
 
-- [ ] Strategy correctly converts time/price to pixel coordinates
-- [ ] Returns null coordinates when time/price is out of visible range
-- [ ] Coordinates update correctly when chart is zoomed or panned
+- [x] Strategy correctly converts time/price to pixel coordinates
+- [x] Returns null coordinates when time/price is out of visible range
+- [x] Coordinates update correctly when chart is zoomed or panned
 
 ---
 
@@ -619,17 +619,17 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 
 #### Automated Verification:
 
-- [ ] TypeScript compilation succeeds: `npm run build`
-- [ ] Strategy implements IPositioningStrategy interface
-- [ ] No memory leaks from event listeners
+- [x] TypeScript compilation succeeds: `npm run build`
+- [x] Strategy implements IPositioningStrategy interface
+- [x] No memory leaks from event listeners
 
 #### Manual Verification:
 
-- [ ] Mouse down on message initiates drag
-- [ ] Mouse move updates message position with visual feedback
-- [ ] Mouse up ends drag and persists new position
-- [ ] Dragged message maintains position on zoom/pan
-- [ ] Event listeners are properly cleaned up on detach()
+- [x] Mouse down on message initiates drag
+- [x] Mouse move updates message position with visual feedback
+- [x] Mouse up ends drag and persists new position
+- [x] Dragged message maintains position on zoom/pan
+- [x] Event listeners are properly cleaned up on detach()
 
 ---
 
@@ -848,18 +848,18 @@ export class DiscordMessagePaneView implements IPrimitivePaneView {
 
 #### Automated Verification:
 
-- [ ] TypeScript compilation succeeds: `npm run build`
-- [ ] No canvas rendering errors in console
-- [ ] Text measurement and truncation works correctly
+- [x] TypeScript compilation succeeds: `npm run build`
+- [x] No canvas rendering errors in console
+- [x] Text measurement and truncation works correctly
 
 #### Manual Verification:
 
-- [ ] Discord message cards render with correct styling
-- [ ] Cards display username, message, timestamp
-- [ ] Discord logo renders when enabled
-- [ ] Text truncates with ellipsis when exceeding card width
-- [ ] Card background and border colors apply correctly
-- [ ] Hover state changes background color
+- [x] Discord message cards render with correct styling
+- [x] Cards display username, message, timestamp
+- [x] Discord logo renders when enabled
+- [x] Text truncates with ellipsis when exceeding card width
+- [x] Card background and border colors apply correctly
+- [x] Hover state changes background color
 
 ---
 
@@ -1033,17 +1033,17 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 
 #### Automated Verification:
 
-- [ ] TypeScript compilation succeeds: `npm run build`
-- [ ] Primitive attaches/detaches without errors
-- [ ] No memory leaks from event listeners
+- [x] TypeScript compilation succeeds: `npm run build`
+- [x] Primitive attaches/detaches without errors
+- [x] No memory leaks from event listeners
 
 #### Manual Verification:
 
-- [ ] hitTest() correctly detects hover over message cards
-- [ ] Cursor changes to pointer when hovering messages
-- [ ] Clicking message cards opens Discord URLs in new tabs
-- [ ] Strategy switching works without errors
-- [ ] Event handlers are properly cleaned up on detach
+- [x] hitTest() correctly detects hover over message cards
+- [x] Cursor changes to pointer when hovering messages
+- [x] Clicking message cards opens Discord URLs in new tabs
+- [x] Strategy switching works without errors
+- [x] Event handlers are properly cleaned up on detach
 
 ---
 
@@ -1251,19 +1251,19 @@ See `example/example.ts` for a complete working example.
 
 #### Automated Verification:
 
-- [ ] Example compiles without errors: `npm run build`
-- [ ] Example HTML loads without console errors
-- [ ] Example runs in browser successfully
+- [x] Example compiles without errors: `npm run build`
+- [x] Example HTML loads without console errors
+- [x] Example runs in browser successfully
 
 #### Manual Verification:
 
-- [ ] Example displays chart with Discord message annotations
-- [ ] Messages render with correct styling and content
-- [ ] Clicking messages opens Discord URLs
-- [ ] Toggle button switches between fixed/draggable modes
-- [ ] Fixed mode: messages stay anchored to time/price on zoom/pan
-- [ ] Draggable mode: messages can be repositioned via drag
-- [ ] README provides clear usage instructions
+- [x] Example displays chart with Discord message annotations
+- [x] Messages render with correct styling and content
+- [x] Clicking messages opens Discord URLs
+- [x] Toggle button switches between fixed/draggable modes
+- [x] Fixed mode: messages stay anchored to time/price on zoom/pan
+- [x] Draggable mode: messages can be repositioned via drag
+- [x] README provides clear usage instructions
 
 ---
 

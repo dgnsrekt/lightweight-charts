@@ -1,0 +1,5 @@
+{
+	"private": true,
+	"main": "discord-message",
+	"types": "discord-message.d.ts"
+}

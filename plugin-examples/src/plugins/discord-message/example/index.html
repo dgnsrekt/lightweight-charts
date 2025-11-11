@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lightweight Charts - Discord Message Plugin Example</title>
+	<link href="../../../examples-base.css" rel="stylesheet" />
+	<style>
+		#buttons {
+			display: flex;
+			gap: 10px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="buttons" class="column">
+		<button id="mode-toggle">Switch to Draggable Mode</button>
+	</div>
+	<div id="chart"></div>
+	<div id="description">
+		<h1>Discord Message</h1>
+		<p class="hint-message">Hint: Click messages to open Discord URLs. Toggle between positioning modes.</p>
+		<p>
+			The Discord Message plugin displays Discord message annotations on charts,
+			similar to TradingView's tweet annotation feature. It supports both fixed
+			(anchored to time/price) and draggable positioning modes.
+		</p>
+	</div>
+	<script type="module" src="./example.ts"></script>
+</body>
+</html>
