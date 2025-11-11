@@ -20,20 +20,20 @@ import { DiscordMessagePrimitive } from './discord-message';
 
 ```typescript
 const discordPlugin = new DiscordMessagePrimitive({
-	positioningMode: 'fixed',
-	showDiscordLogo: true,
+  positioningMode: 'fixed',
+  showDiscordLogo: true,
 });
 
 series.attachPrimitive(discordPlugin);
 
 discordPlugin.addMessage({
-	id: 'msg1',
-	time: someTime,
-	price: somePrice,
-	username: 'TradingView',
-	message: "Don't even open TradingView today.",
-	timestamp: '04 Apr \'25 • 23:43',
-	discordUrl: 'https://discord.com/channels/...',
+  id: 'msg1',
+  time: someTime,
+  price: somePrice,
+  username: 'TradingView',
+  message: "Don't even open TradingView today.",
+  timestamp: '04 Apr \'25 • 23:43',
+  discordUrl: 'https://discord.com/channels/...',
 });
 ```
 
