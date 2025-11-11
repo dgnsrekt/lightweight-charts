@@ -1,6 +1,7 @@
 import { CanvasRenderingTarget2D } from 'fancy-canvas';
 import { IPrimitivePaneRenderer } from 'lightweight-charts';
 import { RendererData } from './irenderer-data';
+import { calculateCardHeight } from '../utils/layout';
 import { discordIcon, iconDimensions } from './icons';
 
 /**
@@ -18,7 +19,7 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 
 				// Calculate card dimensions
 				const cardWidth = options.cardWidth;
-				const cardHeight = this._calculateCardHeight(options);
+				const cardHeight = calculateCardHeight(options);
 				const cardX = x;
 				const cardY = y;
 
@@ -131,13 +132,6 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 
 	update(data: RendererData[]): void {
 		this._data = data;
-	}
-
-	private _calculateCardHeight(
-		options: any
-	): number {
-		// Fixed height: padding + username + message + timestamp + padding
-		return options.cardPadding * 2 + options.lineHeight * 3;
 	}
 
 	private _truncateText(

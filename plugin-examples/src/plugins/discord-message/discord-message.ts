@@ -3,6 +3,9 @@ import {
 	IPrimitivePaneView,
 	PrimitiveHoveredItem,
 	Time,
+	MouseEventParams,
+	MouseEventHandler,
+	SeriesAttachedParameter,
 } from 'lightweight-charts';
 import { PluginBase } from '../plugin-base';
 import { DiscordMessage, DiscordMessageOptions, defaultOptions, PositioningMode } from './options';
@@ -11,6 +14,8 @@ import { IPositioningStrategy } from './positioning/positioning-strategy';
 import { FixedPositioningStrategy } from './positioning/fixed-positioning';
 import { DraggablePositioningStrategy } from './positioning/draggable-positioning';
 import { DiscordMessagePaneView } from './view/discord-message-pane-view';
+import { calculateCardHeight } from './utils/layout';
+import { AnimationScheduler } from './utils/animation-scheduler';
 
 /**
  * Discord Message Plugin
@@ -25,13 +30,14 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	private _strategy: IPositioningStrategy;
 	private _hoveredMessageId: string | null = null;
 	private _dragState: { messageId: string; message: DiscordMessage } | null = null;
-	private _crosshairMoveHandler: any = null;
+	private _crosshairMoveHandler: MouseEventHandler<Time> | null = null;
 	private _mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 	private _documentMouseMoveHandler: ((e: MouseEvent) => void) | null = null;
 	private _documentMouseUpHandler: ((e: MouseEvent) => void) | null = null;
 	private _isDragging: boolean = false;
 	private _dragStartPos: { x: number; y: number } | null = null;
 	private readonly _dragThreshold: number = 5; // pixels
+	private _animationScheduler: AnimationScheduler = new AnimationScheduler();
 
 	constructor(options: Partial<DiscordMessageOptions> = {}) {
 		super();
@@ -46,7 +52,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 		}, this);
 	}
 
-	attached(param: any) {
+	attached(param: SeriesAttachedParameter<Time>) {
 		super.attached(param);
 		this._views = [new DiscordMessagePaneView(this)];
 
@@ -74,6 +80,9 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 
 		// Detach drag listeners if needed
 		this._detachDragListeners();
+
+		// Cancel any pending animation frames
+		this._animationScheduler.cancel();
 
 		// Unsubscribe from click events
 		this.chart.unsubscribeClick(this._clickHandler);
@@ -124,7 +133,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 
 			if (anchor.x !== null && anchor.y !== null) {
 				const cardWidth = this._options.cardWidth;
-				const cardHeight = this._options.cardPadding * 2 + this._options.lineHeight * 3;
+				const cardHeight = calculateCardHeight(this._options);
 
 				if (
 					x >= anchor.x &&
@@ -267,7 +276,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	/**
 	 * Handle crosshair move for hover detection
 	 */
-	private _onCrosshairMove(param: any): void {
+	private _onCrosshairMove(param: MouseEventParams<Time>): void {
 		// Don't update hover state during drag - pin it to dragged card
 		if (this._dragState && this._isDragging) {
 			const newHoveredId = this._dragState.message.id;
@@ -411,7 +420,8 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 			this.series
 		);
 
-		this.requestUpdate();
+		// Schedule update on next animation frame to avoid excessive re-renders
+		this._animationScheduler.schedule(() => this.requestUpdate());
 	}
 
 	/**
@@ -460,7 +470,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 		this.requestUpdate();
 	}
 
-	private _clickHandler = (param: any) => {
+	private _clickHandler = (param: MouseEventParams<Time>) => {
 		if (!param.point) return;
 
 		// Don't open URL if we just finished dragging
