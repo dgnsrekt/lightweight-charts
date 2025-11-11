@@ -11,7 +11,7 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 	private _data: RendererData[] = [];
 
 	draw(target: CanvasRenderingTarget2D): void {
-		// First pass: Draw subtle connecting lines in bitmap space
+		// First pass: Draw crosshair reference lines in bitmap space
 		target.useBitmapCoordinateSpace(scope => {
 			const ctx = scope.context;
 
@@ -19,17 +19,34 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 				const { x, y, options } = data;
 				const cardHeight = this._calculateCardHeight(options);
 
-				// Draw subtle vertical line from card bottom to pane bottom
-				const linePos = positionsLine(x, scope.horizontalPixelRatio, 1);
+				// More visible color for better clarity
+				ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+
+				// VERTICAL LINE - from card bottom to time axis (pane bottom)
+				const verticalLinePos = positionsLine(x, scope.horizontalPixelRatio, 1);
 				const lineStartY = (y + cardHeight) * scope.verticalPixelRatio;
 				const lineEndY = scope.bitmapSize.height;
 
-				ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Very subtle shadow
 				ctx.fillRect(
-					linePos.position,
+					verticalLinePos.position,
 					lineStartY,
-					linePos.length,
+					verticalLinePos.length,
 					lineEndY - lineStartY
+				);
+
+				// HORIZONTAL LINE - from left to right at card's vertical center
+				const cardCenterY = y + (cardHeight / 2);
+				const horizontalLinePos = positionsLine(
+					cardCenterY,
+					scope.verticalPixelRatio,
+					1
+				);
+
+				ctx.fillRect(
+					0, // Start from left edge
+					horizontalLinePos.position,
+					scope.bitmapSize.width, // Extend to right edge
+					horizontalLinePos.length
 				);
 			});
 		});
