@@ -6,8 +6,10 @@ import { DiscordMessage, DiscordMessageOptions } from '../options';
  */
 export interface RendererData {
 	message: DiscordMessage;
-	x: Coordinate;
-	y: Coordinate;
+	x: Coordinate; // Card position X
+	y: Coordinate; // Card position Y
+	anchorX: Coordinate | null; // Original time anchor point
+	anchorY: Coordinate | null; // Original price anchor point
 	options: DiscordMessageOptions;
 	isHovered: boolean;
 }

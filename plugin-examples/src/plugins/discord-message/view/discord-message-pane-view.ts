@@ -40,10 +40,17 @@ export class DiscordMessagePaneView implements IPrimitivePaneView {
 			const anchor = strategy.resolveAnchor(message, chart, series);
 
 			if (anchor.x !== null && anchor.y !== null) {
+				// Calculate original time/price anchor point (base position without offsets)
+				const timeScale = chart.timeScale();
+				const baseX = timeScale.timeToCoordinate(message.time);
+				const baseY = series.priceToCoordinate(message.price);
+
 				data.push({
 					message,
-					x: anchor.x,
+					x: anchor.x, // Card position (may include drag offset)
 					y: anchor.y,
+					anchorX: baseX, // Original time/price anchor
+					anchorY: baseY,
 					options,
 					isHovered: message.id === hoveredId,
 				});

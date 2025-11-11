@@ -2,7 +2,6 @@ import { CanvasRenderingTarget2D } from 'fancy-canvas';
 import { IPrimitivePaneRenderer } from 'lightweight-charts';
 import { RendererData } from './irenderer-data';
 import { discordIcon, iconDimensions } from './icons';
-import { positionsLine } from '../../../helpers/dimensions/positions';
 
 /**
  * Discord message card renderer
@@ -11,56 +10,66 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 	private _data: RendererData[] = [];
 
 	draw(target: CanvasRenderingTarget2D): void {
-		// First pass: Draw crosshair reference lines FROM anchor point in bitmap space
-		target.useBitmapCoordinateSpace(scope => {
-			const ctx = scope.context;
-
-			this._data.forEach(data => {
-				const { x, y } = data;
-
-				// x, y represent the anchor point (time/price location on chart)
-				const anchorX = x;
-				const anchorY = y;
-
-				// More visible color for better clarity
-				ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-
-				// VERTICAL LINE - from anchor point down to time axis (bottom)
-				const verticalLinePos = positionsLine(anchorX, scope.horizontalPixelRatio, 1);
-				const anchorYBitmap = anchorY * scope.verticalPixelRatio;
-
-				ctx.fillRect(
-					verticalLinePos.position,
-					anchorYBitmap,  // Start FROM anchor point
-					verticalLinePos.length,
-					scope.bitmapSize.height - anchorYBitmap  // Down to bottom
-				);
-
-				// HORIZONTAL LINE - from anchor point left to price axis
-				const horizontalLinePos = positionsLine(anchorY, scope.verticalPixelRatio, 1);
-				const anchorXBitmap = anchorX * scope.horizontalPixelRatio;
-
-				ctx.fillRect(
-					0,  // Start from left edge (price axis)
-					horizontalLinePos.position,
-					anchorXBitmap,  // Extend to anchor point
-					horizontalLinePos.length
-				);
-			});
-		});
-
-		// Second pass: Draw message cards in media space
 		target.useMediaCoordinateSpace(scope => {
 			const ctx = scope.context;
 
 			this._data.forEach(data => {
-				const { message, x, y, options, isHovered } = data;
+				const { message, x, y, anchorX, anchorY, options, isHovered } = data;
 
 				// Calculate card dimensions
 				const cardWidth = options.cardWidth;
 				const cardHeight = this._calculateCardHeight(options);
 				const cardX = x;
 				const cardY = y;
+
+				// Draw crosshair lines connecting card to anchor point
+				if (anchorX !== null && anchorY !== null) {
+					ctx.strokeStyle = 'rgba(120, 123, 134, 0.5)';
+					ctx.lineWidth = 2;
+
+					// Calculate card edge connection points
+					const cardCenterX = cardX + cardWidth / 2;
+					const cardTopY = cardY;
+					const cardBottomY = cardY + cardHeight;
+
+					// Determine if card is above or below anchor (connect to top or bottom)
+					const connectToTop = cardY > anchorY;
+					const cardConnectY = connectToTop ? cardTopY : cardBottomY;
+
+					// Check if card is directly above/below anchor (within small threshold)
+					const horizontalOffset = Math.abs(cardCenterX - anchorX);
+					const isDirectlyAbove = horizontalOffset < 5; // 5px threshold
+
+					if (isDirectlyAbove) {
+						// Single vertical line from card to anchor point (price level)
+						ctx.beginPath();
+						ctx.moveTo(cardCenterX, cardConnectY);
+						ctx.lineTo(cardCenterX, anchorY);
+						ctx.stroke();
+					} else {
+						// Three-segment line: vertical from card, horizontal, vertical to anchor point
+						ctx.beginPath();
+
+						// 1. Vertical line from card down/up to horizontal connector level
+						const horizontalLineY = anchorY;
+						ctx.moveTo(cardCenterX, cardConnectY);
+						ctx.lineTo(cardCenterX, horizontalLineY);
+
+						// 2. Horizontal line from card's vertical to anchor's vertical
+						ctx.lineTo(anchorX, horizontalLineY);
+
+						// 3. Vertical line from horizontal connector to anchor point (price level)
+						// (This is just a point, no line needed since we're already at anchorY)
+
+						ctx.stroke();
+					}
+
+					// Draw a small dot at the anchor point (where line meets price)
+					ctx.fillStyle = 'rgba(120, 123, 134, 0.8)';
+					ctx.beginPath();
+					ctx.arc(anchorX, anchorY, 3, 0, Math.PI * 2);
+					ctx.fill();
+				}
 
 				// Draw card background
 				ctx.fillStyle = isHovered

@@ -4,6 +4,14 @@ import { generateLineData } from '../../../sample-data';
 
 const chart = ((window as unknown as any).chart = createChart('chart', {
 	autoSize: true,
+	grid: {
+		vertLines: {
+			visible: false,
+		},
+		horzLines: {
+			visible: false,
+		},
+	},
 }));
 
 const series = chart.addSeries(AreaSeries, {
@@ -31,7 +39,7 @@ discordPlugin.addMessage({
 	price: data[50].value,
 	username: 'TradingView',
 	message: "Don't even open TradingView today.",
-	timestamp: '04 Apr \'25 • 23:43',
+	timestamp: '21 Feb \'18 • 12:00',
 	discordUrl: 'https://discord.com/channels/example/123456',
 	usernameColor: '#5865F2',
 });
@@ -42,7 +50,7 @@ discordPlugin.addMessage({
 	price: data[100].value,
 	username: 'CryptoTrader',
 	message: 'Broker Awards 2024 by @tradingview — Check out the best online brokers.',
-	timestamp: '27 Mar \'25 • 02:42',
+	timestamp: '11 Apr \'18 • 12:00',
 	discordUrl: 'https://discord.com/channels/example/789012',
 });
 
@@ -52,7 +60,7 @@ discordPlugin.addMessage({
 	price: data[200].value,
 	username: 'ChartWizard',
 	message: 'New resistance level confirmed! Watch for breakout.',
-	timestamp: '15 Mar \'25 • 14:22',
+	timestamp: '20 Jul \'18 • 12:00',
 	discordUrl: 'https://discord.com/channels/example/345678',
 	usernameColor: '#FFA500',
 });

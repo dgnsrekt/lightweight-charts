@@ -9,8 +9,8 @@ interface DragState {
 	messageId: string;
 	startX: number;
 	startY: number;
-	offsetX: number;
-	offsetY: number;
+	initialOffsetX: number; // Offset that existed before this drag started
+	initialOffsetY: number;
 	isDragging: boolean;
 }
 
@@ -55,12 +55,15 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 		const anchor = this.resolveAnchor(message, chart, series);
 		if (anchor.x === null || anchor.y === null) return;
 
+		// Capture the existing offset so we can add to it, not replace it
+		const existingOffset = this._pixelOffsets.get(message.id) || { offsetX: 0, offsetY: 0 };
+
 		this._dragState = {
 			messageId: message.id,
 			startX: eventData.x,
 			startY: eventData.y,
-			offsetX: 0,
-			offsetY: 0,
+			initialOffsetX: existingOffset.offsetX,
+			initialOffsetY: existingOffset.offsetY,
 			isDragging: true,
 		};
 	}
@@ -73,41 +76,29 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 	): void {
 		if (!this._dragState || this._dragState.messageId !== message.id) return;
 
-		// Calculate drag offset
-		const offsetX = eventData.x - this._dragState.startX;
-		const offsetY = eventData.y - this._dragState.startY;
+		// Calculate drag delta from the start position
+		const dragDeltaX = eventData.x - this._dragState.startX;
+		const dragDeltaY = eventData.y - this._dragState.startY;
 
-		this._dragState.offsetX = offsetX;
-		this._dragState.offsetY = offsetY;
+		// Add the drag delta to the initial offset (prevents jumping)
+		const newOffsetX = this._dragState.initialOffsetX + dragDeltaX;
+		const newOffsetY = this._dragState.initialOffsetY + dragDeltaY;
 
-		// Store pixel offset
-		this._pixelOffsets.set(message.id, { offsetX, offsetY });
+		// Store the accumulated offset
+		this._pixelOffsets.set(message.id, { offsetX: newOffsetX, offsetY: newOffsetY });
 	}
 
 	handleMouseUp(
 		message: DiscordMessage,
 		_eventData: MouseEventData,
-		chart: IChartApi,
-		series: ISeriesApi<keyof SeriesOptionsMap>
+		_chart: IChartApi,
+		_series: ISeriesApi<keyof SeriesOptionsMap>
 	): void {
 		if (!this._dragState || this._dragState.messageId !== message.id) return;
 
-		// Convert final pixel position back to time/price for persistence
-		const anchor = this.resolveAnchor(message, chart, series);
-		if (anchor.x !== null && anchor.y !== null) {
-			const timeScale = chart.timeScale();
-			const newTime = timeScale.coordinateToTime(anchor.x);
-			const newPrice = series.coordinateToPrice(anchor.y);
-
-			if (newTime !== null && newPrice !== null) {
-				// Update message data (caller handles this)
-				message.time = newTime;
-				message.price = newPrice;
-
-				// Clear pixel offset since we've converted to time/price
-				this._pixelOffsets.delete(message.id);
-			}
-		}
+		// Keep the pixel offset persistent - DO NOT update message.time/price
+		// The anchor point (message.time, message.price) should remain fixed
+		// Only the card position (base + offset) changes
 
 		this._dragState = null;
 	}
