@@ -351,6 +351,16 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 		const message = this._messageAtPoint(x, y);
 		if (!message) return;
 
+		// Disable chart panning during drag
+		this.chart.applyOptions({
+			handleScroll: {
+				mouseWheel: true,
+				pressedMouseMove: false,
+				horzTouchDrag: false,
+				vertTouchDrag: false,
+			}
+		});
+
 		// Initialize potential drag (not yet confirmed as drag)
 		this._dragState = { messageId: message.id, message };
 		this._isDragging = false;
@@ -426,6 +436,16 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 			// Critical: Persist the updated message coordinates to state
 			this._state.updateMessage(this._dragState.message);
 		}
+
+		// Re-enable chart panning after drag
+		this.chart.applyOptions({
+			handleScroll: {
+				mouseWheel: true,
+				pressedMouseMove: true,
+				horzTouchDrag: true,
+				vertTouchDrag: true,
+			}
+		});
 
 		// Clean up using centralized method
 		this._removeDocumentDragListeners();
