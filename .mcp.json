@@ -10,7 +10,11 @@
         "playwright": {
             "command": "npx",
             "args": [
-                "@playwright/mcp@latest"
+                "@playwright/mcp@latest",
+                "--browser",
+                "chromium",
+                "--executable-path",
+                "/home/dgnsrekt/.cache/ms-playwright/chromium-1193/chrome-linux/chrome"
             ]
         }
     }
