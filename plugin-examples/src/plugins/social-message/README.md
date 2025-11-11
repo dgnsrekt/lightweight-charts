@@ -213,12 +213,14 @@ new SocialMessagePrimitive(
 ```
 
 **Parameters:**
+
 - `platformAdapter` (optional): Platform adapter for platform-specific behavior
 - `options` (optional): Configuration options (see below)
 
 ### Methods
 
 #### `addMessage(message: SocialMessage): void`
+
 Add a social media message to the chart.
 
 ```typescript
@@ -237,6 +239,7 @@ plugin.addMessage({
 ```
 
 #### `removeMessage(id: string): void`
+
 Remove a message by ID.
 
 ```typescript
@@ -244,6 +247,7 @@ plugin.removeMessage('msg1');
 ```
 
 #### `updateMessage(message: SocialMessage): void`
+
 Update an existing message.
 
 ```typescript
@@ -254,6 +258,7 @@ plugin.updateMessage({
 ```
 
 #### `messages(): SocialMessage[]`
+
 Get all messages.
 
 ```typescript
@@ -261,6 +266,7 @@ const allMessages = plugin.messages();
 ```
 
 #### `applyOptions(options: Partial<SocialMessageOptions>): void`
+
 Update plugin options dynamically.
 
 ```typescript
@@ -272,6 +278,7 @@ plugin.applyOptions({
 ```
 
 #### `setPositioningMode(mode: 'fixed' | 'draggable'): void`
+
 Switch between positioning modes.
 
 ```typescript
@@ -336,6 +343,7 @@ interface SocialMessageOptions {
 ## Positioning Modes
 
 ### Fixed Mode (Default)
+
 Messages are anchored to specific time/price coordinates and move with chart zoom/pan.
 
 ```typescript
@@ -343,6 +351,7 @@ plugin.setPositioningMode('fixed');
 ```
 
 ### Draggable Mode
+
 Messages can be repositioned via drag-and-drop while maintaining their time/price anchor.
 
 ```typescript
@@ -385,6 +394,7 @@ plugin.applyOptions({
 ## Examples
 
 See the [example directory](./example/) for a complete working demonstration with:
+
 - Multiple platforms on the same chart
 - Platform switcher UI
 - Fixed and draggable positioning modes
