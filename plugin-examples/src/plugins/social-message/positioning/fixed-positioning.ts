@@ -1,5 +1,5 @@
 import { IChartApi, ISeriesApi, SeriesOptionsMap } from 'lightweight-charts';
-import { DiscordMessage } from '../options';
+import { SocialMessage } from '../options';
 import { IPositioningStrategy, AnchorPoint } from './positioning-strategy';
 
 /**
@@ -10,7 +10,7 @@ import { IPositioningStrategy, AnchorPoint } from './positioning-strategy';
  */
 export class FixedPositioningStrategy implements IPositioningStrategy {
 	resolveAnchor(
-		message: DiscordMessage,
+		message: SocialMessage,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
 	): AnchorPoint {

@@ -8,28 +8,30 @@ import {
 	SeriesAttachedParameter,
 } from 'lightweight-charts';
 import { PluginBase } from '../plugin-base';
-import { DiscordMessage, DiscordMessageOptions, defaultOptions, PositioningMode } from './options';
+import { SocialMessage, SocialMessageOptions, defaultOptions, PositioningMode, createDefaultOptions } from './options';
 import { MessagesState } from './state/messages-state';
 import { IPositioningStrategy } from './positioning/positioning-strategy';
 import { FixedPositioningStrategy } from './positioning/fixed-positioning';
 import { DraggablePositioningStrategy } from './positioning/draggable-positioning';
-import { DiscordMessagePaneView } from './view/discord-message-pane-view';
+import { SocialMessagePaneView } from './view/social-message-pane-view';
 import { calculateCardHeight } from './utils/layout';
 import { AnimationScheduler } from './utils/animation-scheduler';
+import { IPlatformAdapter } from './adapters/platform-adapter';
 
 /**
- * Discord Message Plugin
+ * Social Message Plugin
  *
- * Displays Discord messages as card annotations on the chart.
+ * Displays social media messages (Discord, X.com, Telegram, etc.) as card annotations on the chart.
  * Supports both fixed (time/price anchored) and draggable positioning modes.
+ * Platform-specific behavior (icons, themes, URLs) is handled via platform adapters.
  */
-export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimitive<Time> {
-	private _state: MessagesState;
-	private _options: DiscordMessageOptions;
-	private _views: DiscordMessagePaneView[];
+export class SocialMessagePrimitive extends PluginBase implements ISeriesPrimitive<Time> {
+	private _state: MessagesState<SocialMessage>;
+	private _options: SocialMessageOptions;
+	private _views: SocialMessagePaneView[];
 	private _strategy: IPositioningStrategy;
 	private _hoveredMessageId: string | null = null;
-	private _dragState: { messageId: string; message: DiscordMessage } | null = null;
+	private _dragState: { messageId: string; message: SocialMessage } | null = null;
 	private _crosshairMoveHandler: MouseEventHandler<Time> | null = null;
 	private _mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 	private _documentMouseMoveHandler: ((e: MouseEvent) => void) | null = null;
@@ -39,10 +41,19 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	private readonly _dragThreshold: number = 5; // pixels
 	private _animationScheduler: AnimationScheduler = new AnimationScheduler();
 
-	constructor(options: Partial<DiscordMessageOptions> = {}) {
+	constructor(
+		platformAdapter?: IPlatformAdapter,
+		options: Partial<SocialMessageOptions> = {}
+	) {
 		super();
-		this._state = new MessagesState();
-		this._options = { ...defaultOptions, ...options };
+		this._state = new MessagesState<SocialMessage>();
+
+		// Merge platform adapter defaults with user options
+		const baseOptions = platformAdapter
+			? createDefaultOptions(platformAdapter)
+			: defaultOptions;
+		this._options = { ...baseOptions, ...options };
+
 		this._views = [];
 		this._strategy = new FixedPositioningStrategy();
 
@@ -54,7 +65,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 
 	attached(param: SeriesAttachedParameter<Time>) {
 		super.attached(param);
-		this._views = [new DiscordMessagePaneView(this)];
+		this._views = [new SocialMessagePaneView(this)];
 
 		// Attach strategy if needed
 		if (this._strategy.attach) {
@@ -124,7 +135,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	 * Find message at given point coordinates
 	 * Single source of truth for hit detection
 	 */
-	private _messageAtPoint(x: number, y: number): DiscordMessage | null {
+	private _messageAtPoint(x: number, y: number): SocialMessage | null {
 		const chart = this.chart;
 		const series = this.series;
 
@@ -155,7 +166,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 		if (message) {
 			return {
 				cursorStyle: this._options.cursorOnHover,
-				externalId: `discord-message-${message.id}`,
+				externalId: `social-message-${message.id}`,
 				zOrder: 'top',
 			};
 		}
@@ -164,14 +175,14 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	}
 
 	/**
-	 * Add a Discord message
+	 * Add a social media message
 	 */
-	addMessage(message: DiscordMessage): void {
+	addMessage(message: SocialMessage): void {
 		this._state.addMessage(message);
 	}
 
 	/**
-	 * Remove a Discord message
+	 * Remove a social media message
 	 */
 	removeMessage(id: string): void {
 		this._state.removeMessage(id);
@@ -180,21 +191,21 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	/**
 	 * Update an existing message
 	 */
-	updateMessage(message: DiscordMessage): void {
+	updateMessage(message: SocialMessage): void {
 		this._state.updateMessage(message);
 	}
 
 	/**
 	 * Get all messages
 	 */
-	messages(): DiscordMessage[] {
+	messages(): SocialMessage[] {
 		return this._state.messages();
 	}
 
 	/**
 	 * Update plugin options
 	 */
-	applyOptions(options: Partial<DiscordMessageOptions>): void {
+	applyOptions(options: Partial<SocialMessageOptions>): void {
 		this._options = { ...this._options, ...options };
 
 		// If positioning mode changed, recreate strategy
@@ -208,7 +219,7 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 	/**
 	 * Get current options
 	 */
-	options(): DiscordMessageOptions {
+	options(): SocialMessageOptions {
 		return { ...this._options };
 	}
 
@@ -480,8 +491,12 @@ export class DiscordMessagePrimitive extends PluginBase implements ISeriesPrimit
 
 		const message = this._messageAtPoint(param.point.x, param.point.y);
 		if (message) {
-			// Open Discord URL
-			window.open(message.discordUrl, '_blank');
+			// Use platform adapter to open URL if available, otherwise use default
+			if (this._options.platformAdapter) {
+				this._options.platformAdapter.openUrl(message.platformUrl);
+			} else {
+				window.open(message.platformUrl, '_blank', 'noopener,noreferrer');
+			}
 		}
 	};
 }

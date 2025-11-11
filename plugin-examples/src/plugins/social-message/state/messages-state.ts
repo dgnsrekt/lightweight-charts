@@ -1,15 +1,15 @@
 import { Delegate } from '../../../helpers/delegate';
-import { DiscordMessage } from '../options';
 
 /**
- * Discord messages state management
+ * Generic messages state management
+ * Can be used with any message type that has an `id` field
  */
-export class MessagesState {
-	private _messageAdded: Delegate<DiscordMessage> = new Delegate();
+export class MessagesState<T extends { id: string }> {
+	private _messageAdded: Delegate<T> = new Delegate();
 	private _messageRemoved: Delegate<string> = new Delegate();
-	private _messageChanged: Delegate<DiscordMessage> = new Delegate();
+	private _messageChanged: Delegate<T> = new Delegate();
 	private _messagesChanged: Delegate = new Delegate();
-	private _messages: Map<string, DiscordMessage>;
+	private _messages: Map<string, T>;
 
 	constructor() {
 		this._messages = new Map();
@@ -22,7 +22,7 @@ export class MessagesState {
 		this._messagesChanged.unsubscribeAll(this);
 	}
 
-	messageAdded(): Delegate<DiscordMessage> {
+	messageAdded(): Delegate<T> {
 		return this._messageAdded;
 	}
 
@@ -30,7 +30,7 @@ export class MessagesState {
 		return this._messageRemoved;
 	}
 
-	messageChanged(): Delegate<DiscordMessage> {
+	messageChanged(): Delegate<T> {
 		return this._messageChanged;
 	}
 
@@ -38,7 +38,7 @@ export class MessagesState {
 		return this._messagesChanged;
 	}
 
-	addMessage(message: DiscordMessage): void {
+	addMessage(message: T): void {
 		this._messages.set(message.id, message);
 		this._messageAdded.fire(message);
 		this._messagesChanged.fire();
@@ -51,22 +51,22 @@ export class MessagesState {
 		this._messagesChanged.fire();
 	}
 
-	updateMessage(message: DiscordMessage): void {
+	updateMessage(message: T): void {
 		if (!this._messages.has(message.id)) return;
 		this._messages.set(message.id, message);
 		this._messageChanged.fire(message);
 		this._messagesChanged.fire();
 	}
 
-	getMessage(id: string): DiscordMessage | undefined {
+	getMessage(id: string): T | undefined {
 		return this._messages.get(id);
 	}
 
-	messages(): DiscordMessage[] {
+	messages(): T[] {
 		return this._messagesArray;
 	}
 
-	private _messagesArray: DiscordMessage[] = [];
+	private _messagesArray: T[] = [];
 	private _updateMessagesArray() {
 		this._messagesArray = Array.from(this._messages.values());
 	}

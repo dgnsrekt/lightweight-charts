@@ -3,20 +3,20 @@ import {
 	IPrimitivePaneRenderer,
 	PrimitivePaneViewZOrder,
 } from 'lightweight-charts';
-import { DiscordMessagePrimitive } from '../discord-message';
-import { DiscordMessagePaneRenderer } from '../renderer/discord-message-pane-renderer';
+import { SocialMessagePrimitive } from '../social-message';
+import { SocialMessagePaneRenderer } from '../renderer/social-message-pane-renderer';
 import { RendererData } from '../renderer/irenderer-data';
 
 /**
- * Discord message pane view
+ * Social message pane view
  */
-export class DiscordMessagePaneView implements IPrimitivePaneView {
-	private _source: DiscordMessagePrimitive;
-	private _renderer: DiscordMessagePaneRenderer;
+export class SocialMessagePaneView implements IPrimitivePaneView {
+	private _source: SocialMessagePrimitive;
+	private _renderer: SocialMessagePaneRenderer;
 
-	constructor(source: DiscordMessagePrimitive) {
+	constructor(source: SocialMessagePrimitive) {
 		this._source = source;
-		this._renderer = new DiscordMessagePaneRenderer();
+		this._renderer = new SocialMessagePaneRenderer();
 	}
 
 	zOrder(): PrimitivePaneViewZOrder {

@@ -1,5 +1,5 @@
 import { IChartApi, ISeriesApi, SeriesOptionsMap, Coordinate } from 'lightweight-charts';
-import { DiscordMessage } from '../options';
+import { SocialMessage } from '../options';
 
 /**
  * Resolved anchor point in pixel coordinates
@@ -26,7 +26,7 @@ export interface IPositioningStrategy {
 	 * Resolve message anchor to pixel coordinates
 	 */
 	resolveAnchor(
-		message: DiscordMessage,
+		message: SocialMessage,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
 	): AnchorPoint;
@@ -35,7 +35,7 @@ export interface IPositioningStrategy {
 	 * Handle mouse down event (for draggable mode)
 	 */
 	handleMouseDown?(
-		message: DiscordMessage,
+		message: SocialMessage,
 		eventData: MouseEventData,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
@@ -45,7 +45,7 @@ export interface IPositioningStrategy {
 	 * Handle mouse move event (for draggable mode)
 	 */
 	handleMouseMove?(
-		message: DiscordMessage,
+		message: SocialMessage,
 		eventData: MouseEventData,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
@@ -55,7 +55,7 @@ export interface IPositioningStrategy {
 	 * Handle mouse up event (for draggable mode)
 	 */
 	handleMouseUp?(
-		message: DiscordMessage,
+		message: SocialMessage,
 		eventData: MouseEventData,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>

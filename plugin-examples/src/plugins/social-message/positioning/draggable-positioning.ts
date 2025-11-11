@@ -1,5 +1,5 @@
 import { IChartApi, ISeriesApi, SeriesOptionsMap, Coordinate } from 'lightweight-charts';
-import { DiscordMessage } from '../options';
+import { SocialMessage } from '../options';
 import { IPositioningStrategy, AnchorPoint, MouseEventData } from './positioning-strategy';
 
 /**
@@ -25,7 +25,7 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 	private _pixelOffsets: Map<string, { offsetX: number; offsetY: number }> = new Map();
 
 	resolveAnchor(
-		message: DiscordMessage,
+		message: SocialMessage,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
 	): AnchorPoint {
@@ -47,7 +47,7 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 	}
 
 	handleMouseDown(
-		message: DiscordMessage,
+		message: SocialMessage,
 		eventData: MouseEventData,
 		chart: IChartApi,
 		series: ISeriesApi<keyof SeriesOptionsMap>
@@ -69,7 +69,7 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 	}
 
 	handleMouseMove(
-		message: DiscordMessage,
+		message: SocialMessage,
 		eventData: MouseEventData,
 		_chart: IChartApi,
 		_series: ISeriesApi<keyof SeriesOptionsMap>
@@ -89,7 +89,7 @@ export class DraggablePositioningStrategy implements IPositioningStrategy {
 	}
 
 	handleMouseUp(
-		message: DiscordMessage,
+		message: SocialMessage,
 		_eventData: MouseEventData,
 		_chart: IChartApi,
 		_series: ISeriesApi<keyof SeriesOptionsMap>

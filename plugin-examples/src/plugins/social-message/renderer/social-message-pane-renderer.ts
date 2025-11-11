@@ -2,12 +2,12 @@ import { CanvasRenderingTarget2D } from 'fancy-canvas';
 import { IPrimitivePaneRenderer } from 'lightweight-charts';
 import { RendererData } from './irenderer-data';
 import { calculateCardHeight } from '../utils/layout';
-import { discordIcon, iconDimensions } from './icons';
 
 /**
- * Discord message card renderer
+ * Social message card renderer
+ * Supports multiple platforms via platform adapters
  */
-export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
+export class SocialMessagePaneRenderer implements IPrimitivePaneRenderer {
 	private _data: RendererData[] = [];
 
 	draw(target: CanvasRenderingTarget2D): void {
@@ -93,22 +93,26 @@ export class DiscordMessagePaneRenderer implements IPrimitivePaneRenderer {
 				let currentY = cardY + options.cardPadding;
 				const contentX = cardX + options.cardPadding;
 
-				// Draw Discord logo (if enabled)
-				if (options.showDiscordLogo) {
-					ctx.save();
-					ctx.fillStyle = '#5865F2'; // Discord blurple
-					ctx.translate(contentX, currentY);
-					const scale = 16 / iconDimensions;
-					ctx.scale(scale, scale);
-					ctx.fill(discordIcon, 'evenodd');
-					ctx.restore();
+				// Draw platform icon (if enabled and adapter provided)
+				if (options.showPlatformIcon && options.platformAdapter) {
+					const iconSize = 16;
+					options.platformAdapter.renderIcon(ctx, contentX, currentY, iconSize);
 				}
 
 				// Draw username
-				const usernameX = contentX + (options.showDiscordLogo ? 24 : 0);
+				const usernameX = contentX + (options.showPlatformIcon ? 24 : 0);
 				ctx.font = options.usernameFont;
 				ctx.fillStyle = message.usernameColor || options.usernameColor;
 				ctx.fillText(message.username, usernameX, currentY + 12);
+
+				// Draw platform-specific badge (e.g., verified badge for X.com)
+				if (options.platformAdapter?.renderBadge && message.metadata) {
+					const usernameWidth = ctx.measureText(message.username).width;
+					const badgeX = usernameX + usernameWidth + 4; // 4px spacing after username
+					const badgeY = currentY + 1; // Align with username baseline
+					options.platformAdapter.renderBadge(ctx, badgeX, badgeY, message.metadata);
+				}
+
 				currentY += options.lineHeight;
 
 				// Draw message content
