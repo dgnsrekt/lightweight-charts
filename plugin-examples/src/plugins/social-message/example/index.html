@@ -3,30 +3,135 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Lightweight Charts - Discord Message Plugin Example</title>
+	<title>Lightweight Charts - Social Message Plugin Example</title>
 	<link href="../../../examples-base.css" rel="stylesheet" />
 	<style>
-		#buttons {
+		#controls {
 			display: flex;
-			gap: 10px;
+			gap: 30px;
 			margin-top: 10px;
-			margin-bottom: 10px;
+			margin-bottom: 20px;
+			flex-wrap: wrap;
+		}
+
+		.control-group {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.control-group h3 {
+			margin: 0;
+			font-size: 14px;
+			font-weight: 600;
+			color: #666;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.button-group {
+			display: flex;
+			gap: 8px;
+		}
+
+		button {
+			padding: 10px 20px;
+			border: 2px solid #ddd;
+			background: white;
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 500;
+			transition: all 0.2s ease;
+		}
+
+		button:hover {
+			border-color: #999;
+			background: #f5f5f5;
+		}
+
+		button.active {
+			border-color: #2196F3;
+			background: #2196F3;
+			color: white;
+		}
+
+		button.active:hover {
+			border-color: #1976D2;
+			background: #1976D2;
+		}
+
+		/* Platform-specific button colors when active */
+		button.platform-discord.active {
+			border-color: #5865F2;
+			background: #5865F2;
+		}
+
+		button.platform-discord.active:hover {
+			border-color: #4752C4;
+			background: #4752C4;
+		}
+
+		button.platform-x.active {
+			border-color: #1DA1F2;
+			background: #1DA1F2;
+		}
+
+		button.platform-x.active:hover {
+			border-color: #0C85D0;
+			background: #0C85D0;
+		}
+
+		button.platform-telegram.active {
+			border-color: #2AABEE;
+			background: #2AABEE;
+		}
+
+		button.platform-telegram.active:hover {
+			border-color: #1B8BC7;
+			background: #1B8BC7;
 		}
 	</style>
 </head>
 <body>
-	<div id="buttons" class="column">
-		<button id="mode-toggle">Switch to Draggable Mode</button>
+	<div id="controls">
+		<div class="control-group">
+			<h3>Platform Theme</h3>
+			<div class="button-group">
+				<button id="platform-discord" class="platform-discord active">Discord</button>
+				<button id="platform-x" class="platform-x">X (Twitter)</button>
+				<button id="platform-telegram" class="platform-telegram">Telegram</button>
+			</div>
+		</div>
+		<div class="control-group">
+			<h3>Positioning Mode</h3>
+			<div class="button-group">
+				<button id="mode-toggle">Switch to Draggable Mode</button>
+			</div>
+		</div>
 	</div>
 	<div id="chart"></div>
 	<div id="description">
-		<h1>Discord Message</h1>
-		<p class="hint-message">Hint: Click messages to open Discord URLs. Toggle between positioning modes.</p>
-		<p>
-			The Discord Message plugin displays Discord message annotations on charts,
-			similar to TradingView's tweet annotation feature. It supports both fixed
-			(anchored to time/price) and draggable positioning modes.
+		<h1>Social Message</h1>
+		<p class="hint-message">
+			Hint: Click messages to open platform URLs. Switch between platform themes to see different styles.
+			Toggle between fixed (anchored to time/price) and draggable positioning modes.
 		</p>
+		<p>
+			The Social Message plugin displays social media message annotations on charts from multiple platforms
+			(Discord, X/Twitter, Telegram), similar to TradingView's social annotation features. Each platform
+			has its own distinct theme, branding, and special features like verified badges for X/Twitter.
+		</p>
+		<h2>Features</h2>
+		<ul>
+			<li><strong>Multi-Platform Support:</strong> Discord, X.com (Twitter), and Telegram with platform-specific styling</li>
+			<li><strong>Platform Switcher:</strong> Dynamically change themes to match different social media platforms</li>
+			<li><strong>Verified Badges:</strong> X/Twitter messages can display blue verified checkmarks</li>
+			<li><strong>Dual Positioning Modes:</strong> Fixed (time/price anchored) or draggable</li>
+			<li><strong>Crosshair Lines:</strong> Visual connection between message and chart position</li>
+			<li><strong>Interactive:</strong> Click to open original platform URLs</li>
+			<li><strong>Extensible:</strong> Easy to add new platforms via adapter interface</li>
+		</ul>
 	</div>
 	<script type="module" src="./example.ts"></script>
 </body>
